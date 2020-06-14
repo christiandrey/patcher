@@ -2,6 +2,10 @@ import produce from 'immer';
 
 type ShallowPatchResult = 'patched' | 'check-enforced' | 'not-patched';
 
+type DeepPartial<T> = {
+  [K in keyof T]?: T[K] extends object ? DeepPartial<T[K]> : T[K];
+};
+
 function parseMerge<T>(to: T, from: Partial<T>) {
   const keys = Object.keys(from);
 
@@ -25,7 +29,7 @@ function parseMerge<T>(to: T, from: Partial<T>) {
   }
 }
 
-function tryShallowPatch<T>(to: T, from: Partial<T>): ShallowPatchResult {
+function tryShallowPatch<T>(to: T, from: DeepPartial<T>): ShallowPatchResult {
   if (!isObject(to) && !isObject(from)) {
     return 'not-patched';
   }
@@ -45,7 +49,7 @@ function tryShallowPatch<T>(to: T, from: Partial<T>): ShallowPatchResult {
 
 function shallowPatch<T>(
   to: T,
-  from: Partial<T>,
+  from: DeepPartial<T>,
   key: any,
   enforceNewType: boolean,
 ) {
@@ -62,7 +66,7 @@ function shallowPatch<T>(
   }
 }
 
-function parsePatch<T>(to: T, from: Partial<T>, enforceNewType = false) {
+function parsePatch<T>(to: T, from: DeepPartial<T>, enforceNewType = false) {
   const keys = Object.keys(from);
 
   for (let p of keys) {
