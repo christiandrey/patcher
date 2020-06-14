@@ -1,16 +1,11 @@
 import produce from 'immer';
 
-// function parse<T>(from: T, predicate: (key: keyof T, value: any) => any): T {
-
-// }
-
 type ShallowPatchResult = 'patched' | 'check-enforced' | 'not-patched';
 
 function parseMerge<T>(to: T, from: Partial<T>) {
   const keys = Object.keys(from);
 
   for (let p of keys) {
-    // o[p] = from[p];
     const intendedValue = from[p];
 
     if (isObject(intendedValue)) {
@@ -77,11 +72,14 @@ function parsePatch<T>(to: T, from: Partial<T>, enforceNewType = false) {
       const children = Object.values(intendedValue);
 
       if (children.some((o) => isObject(o))) {
+        //not last node
         parsePatch(to[p], from[p], enforceNewType);
       } else {
+        // last node
         shallowPatch(to, from, p, enforceNewType);
       }
     } else {
+      // last node
       shallowPatch(to, from, p, enforceNewType);
     }
   }
@@ -111,8 +109,3 @@ export default {
   merge,
   patch,
 };
-
-/*
-if value of key is last node i.e. no nested children, then merge
-auto-vivification support ?
-*/
