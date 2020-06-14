@@ -1,0 +1,20 @@
+{
+  "name": "patcher",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/christiandrey/patcher.git",
+  "author": "Oluwaseun Adedire <oluwaseun.adedire@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "test": "jest"
+  },
+  "dependencies": {
+    "immer": "7.0.1"
+  },
+  "devDependencies": {
+    "@types/jest": "26.0.0",
+    "jest": "26.0.1",
+    "ts-jest": "26.1.0",
+    "typescript": "3.9.5"
+  }
+}
