@@ -1,8 +1,9 @@
 {
   "name": "patcher",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "main": "index.js",
   "repository": "https://github.com/christiandrey/patcher.git",
+  "types": "./typings/index.d.ts",
   "author": "Oluwaseun Adedire <oluwaseun.adedire@gmail.com>",
   "license": "MIT",
   "scripts": {
