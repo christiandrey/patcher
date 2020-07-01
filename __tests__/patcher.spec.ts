@@ -86,4 +86,23 @@ describe('patcher', () => {
 
     expect(actualResult).toMatchObject(expectedResult);
   });
+
+  test('should patch objects containing arrays', () => {
+    const to = {
+      a: 1,
+      b: [1, 2],
+    };
+
+    const expectedResult = {
+      a: 2,
+      b: [1, 2, 3],
+    };
+
+    const actualResult = patcher.patch(to, {
+      a: {$: 2},
+      b: {$: [3]},
+    });
+
+    expect(actualResult).toMatchObject(expectedResult);
+  });
 });
