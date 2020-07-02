@@ -42,7 +42,7 @@ function parsePatch<T, P extends keyof T>(pack: PatchParams<T, P>) {
   }
 }
 
-function parseSet<T, P extends keyof T>(pack: PatchParams<T, P>) {
+function parseSet<T, P extends keyof T>(pack: SetParams<T, P>) {
   let {target, source, root, identifier} = pack;
   const keys = Object.keys(source);
 
@@ -82,7 +82,7 @@ function parseSet<T, P extends keyof T>(pack: PatchParams<T, P>) {
   }
 }
 
-function parseUnset<T, P extends keyof T>(pack: PatchParams<T, P>) {
+function parseUnset<T, P extends keyof T>(pack: UnsetParams<T, P>) {
   let {target, source, root, identifier} = pack;
   const keys = Object.keys(source);
 
@@ -134,7 +134,7 @@ function set<T>(target: T, source: SetSpec<T>) {
   return result;
 }
 
-function unset<T>(target: T, source: SetSpec<T>) {
+function unset<T>(target: T, source: UnsetSpec<T>) {
   const result = produce(target, (o) => {
     parseUnset({target: o, source: source as any});
   });

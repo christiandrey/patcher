@@ -41,3 +41,17 @@ type PatchParams<T, P extends keyof T> = {
   root?: T;
   identifier?: P;
 };
+
+type SetParams<T, P extends keyof T> = {
+  target: T[P] | T;
+  source: SetSpec<T | T[P]>;
+  root?: T;
+  identifier?: P;
+};
+
+type UnsetParams<T, P extends keyof T> = {
+  target: T[P] | T;
+  source: UnsetSpec<T | T[P]>;
+  root?: T;
+  identifier?: P;
+};
