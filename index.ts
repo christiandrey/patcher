@@ -10,8 +10,16 @@ function getType<T>(value: T): PrimitiveType {
   return Array.isArray(value) ? 'array' : 'object';
 }
 
-function parsePatch<T, P extends keyof T>(pack: PatchParams<T, P>) {
+function distinct<T>(list: Array<T>): Array<T> {
+  return Array.from(new Set(list));
+}
+
+function parsePatch<T, P extends keyof T>(
+  pack: PatchParams<T, P>,
+  config: PatchConfig,
+) {
   let {target, source, root, identifier} = pack;
+  const {arrayDistinct, arrayPosition} = config;
   const keys = Object.keys(source);
 
   for (const key of keys) {
@@ -20,7 +28,29 @@ function parsePatch<T, P extends keyof T>(pack: PatchParams<T, P>) {
 
       switch (type) {
         case 'array':
-          Array.prototype.push.apply(root?.[identifier] ?? target, source[key]);
+          if (arrayPosition === 'start') {
+            Array.prototype.unshift.apply(
+              root?.[identifier] ?? target,
+              source[key],
+            );
+          } else {
+            Array.prototype.push.apply(
+              root?.[identifier] ?? target,
+              source[key],
+            );
+          }
+
+          if (arrayDistinct) {
+            const values = Array.prototype.splice.apply(
+              root?.[identifier] ?? target,
+              [0],
+            );
+            const distinctValues = distinct(values);
+            Array.prototype.push.apply(
+              root?.[identifier] ?? target,
+              distinctValues,
+            );
+          }
           break;
         case 'object':
           for (const o in source[key]) {
@@ -32,12 +62,15 @@ function parsePatch<T, P extends keyof T>(pack: PatchParams<T, P>) {
           break;
       }
     } else {
-      parsePatch({
-        target: target[key],
-        source: source[key],
-        root: target,
-        identifier: key,
-      });
+      parsePatch(
+        {
+          target: target[key],
+          source: source[key],
+          root: target,
+          identifier: key,
+        },
+        config,
+      );
     }
   }
 }
@@ -118,9 +151,16 @@ function parseUnset<T, P extends keyof T>(pack: UnsetParams<T, P>) {
   }
 }
 
-function patch<T>(target: T, source: PatchSpec<T>) {
+function patch<T>(target: T, source: PatchSpec<T>, config?: PatchConfig) {
+  const defaultConfig = {
+    arrayDistinct: false,
+    arrayPosition: 'end',
+  } as PatchConfig;
+
+  const mergedConfig = {...defaultConfig, ...(config ?? {})};
+
   const result = produce(target, (o) => {
-    parsePatch({target: o, source: source as any});
+    parsePatch({target: o, source: source as any}, mergedConfig);
   });
 
   return result;

@@ -55,3 +55,8 @@ type UnsetParams<T, P extends keyof T> = {
   root?: T;
   identifier?: P;
 };
+
+type PatchConfig = Partial<{
+  arrayDistinct: boolean;
+  arrayPosition: 'start' | 'end';
+}>;

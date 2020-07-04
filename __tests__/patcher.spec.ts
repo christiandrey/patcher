@@ -122,6 +122,71 @@ describe('patcher', () => {
     expect(actualResult).toMatchObject(expectedResult);
   });
 
+  test('should patch objects containing arrays with position set to start', () => {
+    const to = {
+      a: 1,
+      b: [1, 2],
+    };
+
+    const expectedResult = {
+      a: 2,
+      b: [3, 1, 2],
+    };
+
+    const actualResult = patcher.patch(
+      to,
+      {
+        a: {$: 2},
+        b: {$: [3]},
+      },
+      {arrayPosition: 'start'},
+    );
+
+    expect(actualResult).toMatchObject(expectedResult);
+  });
+
+  test('should patch objects containing arrays without distinct option', () => {
+    const to = {
+      a: 1,
+      b: [1, 2],
+    };
+
+    const expectedResult = {
+      a: 2,
+      b: [1, 2, 1, 3],
+    };
+
+    const actualResult = patcher.patch(to, {
+      a: {$: 2},
+      b: {$: [1, 3]},
+    });
+
+    expect(actualResult).toMatchObject(expectedResult);
+  });
+
+  test('should patch objects containing arrays with distinct option', () => {
+    const to = {
+      a: 1,
+      b: [1, 2],
+    };
+
+    const expectedResult = {
+      a: 2,
+      b: [1, 2, 3],
+    };
+
+    const actualResult = patcher.patch(
+      to,
+      {
+        a: {$: 2},
+        b: {$: [1, 3]},
+      },
+      {arrayDistinct: true},
+    );
+
+    expect(actualResult).toMatchObject(expectedResult);
+  });
+
   test('should set correctly with root level objects', () => {
     const target = {
       a: 1,
